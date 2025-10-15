@@ -23,6 +23,7 @@
             border-radius: 25px;
             border: 4px solid black;
             font-family: 'Trebuchet MS', 'Lucida Sans', sans-serif;
+            font-weight: bold;
             font-size: 28px;
             max-width: 800px;
             min-height: 50px;
@@ -34,7 +35,7 @@
         #chat-display::after {
             content: '';
             position: absolute;
-            bottom: -40px;
+            bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -151,7 +152,7 @@
                     if (i >= text.length) {
                         setTimeout(function() {
                             chatDisplay.style.display = 'none';
-                        }, 4000);
+                        }, 8000);
                         return;
                     }
                     
@@ -188,6 +189,3 @@
     </script>
 </body>
 </html>
-
-
-
