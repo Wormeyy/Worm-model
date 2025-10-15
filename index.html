@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Overlay</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: transparent;
+        }
+        
+        #chat-display {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 28px;
+            max-width: 800px;
+            min-height: 50px;
+            display: none;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        #input-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(147, 71, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        #text-input {
+            padding: 12px 15px;
+            font-size: 16px;
+            border: 2px solid #9147ff;
+            border-radius: 5px;
+            width: 350px;
+            background: white;
+        }
+        
+        #send-button {
+            padding: 12px 25px;
+            font-size: 16px;
+            background: #9147ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        #send-button:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-display"></div>
+    
+    <div id="input-container">
+        <input type="text" id="text-input" placeholder="Type your message...">
+        <button id="send-button">Send</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script>
+        var chatDisplay = document.getElementById('chat-display');
+        var textInput = document.getElementById('text-input');
+        var sendButton = document.getElementById('send-button');
+        
+        var synth;
+        
+        function initAudio() {
+            return Tone.start().then(function() {
+                var oscillatorConfig = { type: 'sine' };
+                var envelopeConfig = {
+                    attack: 0.001,
+                    decay: 0.05,
+                    sustain: 0.1,
+                    release: 0.05
+                };
+                synth = new Tone.Synth({
+                    oscillator: oscillatorConfig,
+                    envelope: envelopeConfig
+                }).toDestination();
+                synth.volume.value = -5;
+            });
+        }
+        
+        function playSound() {
+            if (synth) {
+                var notes = ['C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5'];
+                var randomNote = notes[Math.floor(Math.random() * notes.length)];
+                synth.triggerAttackRelease(randomNote, '0.08');
+            }
+        }
+        
+        function talk(text) {
+            if (!text.trim()) return;
+            
+            initAudio().then(function() {
+                chatDisplay.textContent = '';
+                chatDisplay.style.display = 'block';
+                
+                var i = 0;
+                
+                function processChar() {
+                    if (i >= text.length) {
+                        setTimeout(function() {
+                            chatDisplay.style.display = 'none';
+                        }, 4000);
+                        return;
+                    }
+                    
+                    chatDisplay.textContent += text[i];
+                    
+                    if (text[i] !== ' ' && text[i] !== '.' && text[i] !== ',' && text[i] !== '!' && text[i] !== '?') {
+                        playSound();
+                        i++;
+                        setTimeout(processChar, 70);
+                    } else {
+                        i++;
+                        setTimeout(processChar, 40);
+                    }
+                }
+                
+                processChar();
+            });
+        }
+        
+        function sendMessage() {
+            var message = textInput.value;
+            if (message.trim()) {
+                talk(message);
+                textInput.value = '';
+            }
+        }
+        
+        sendButton.addEventListener('click', sendMessage);
+        textInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
