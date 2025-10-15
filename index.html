@@ -116,6 +116,7 @@
         var isCurrentlyTalking = false;
         
         function initAudio() {
+            if (synth) return Promise.resolve();
             return Tone.start().then(function() {
                 var oscillatorConfig = { type: 'sine' };
                 var envelopeConfig = {
@@ -156,7 +157,7 @@
                         setTimeout(function() {
                             chatDisplay.style.display = 'none';
                             isCurrentlyTalking = false;
-                        }, 8000);
+                        }, 15000);
                         return;
                     }
                     
