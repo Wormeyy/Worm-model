@@ -35,7 +35,7 @@
         #chat-display::after {
             content: '';
             position: absolute;
-            bottom: -20px;
+            bottom: -40px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
@@ -121,15 +121,15 @@
                 var oscillatorConfig = { type: 'sine' };
                 var envelopeConfig = {
                     attack: 0.001,
-                    decay: 0.05,
-                    sustain: 0.1,
-                    release: 0.05
+                    decay: 0.02,
+                    sustain: 0.01,
+                    release: 0.02
                 };
                 synth = new Tone.Synth({
                     oscillator: oscillatorConfig,
                     envelope: envelopeConfig
                 }).toDestination();
-                synth.volume.value = -5;
+                synth.volume.value = 5;
             });
         }
         
@@ -137,7 +137,7 @@
             if (synth) {
                 var notes = ['C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5'];
                 var randomNote = notes[Math.floor(Math.random() * notes.length)];
-                synth.triggerAttackRelease(randomNote, '0.08');
+                synth.triggerAttackRelease(randomNote, '0.03');
             }
         }
         
