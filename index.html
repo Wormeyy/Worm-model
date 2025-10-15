@@ -113,6 +113,7 @@
         var sendButton = document.getElementById('send-button');
         
         var synth;
+        var isCurrentlyTalking = false;
         
         function initAudio() {
             return Tone.start().then(function() {
@@ -140,7 +141,9 @@
         }
         
         function talk(text) {
-            if (!text.trim()) return;
+            if (!text.trim() || isCurrentlyTalking) return;
+            
+            isCurrentlyTalking = true;
             
             initAudio().then(function() {
                 chatDisplay.textContent = '';
@@ -152,6 +155,7 @@
                     if (i >= text.length) {
                         setTimeout(function() {
                             chatDisplay.style.display = 'none';
+                            isCurrentlyTalking = false;
                         }, 8000);
                         return;
                     }
