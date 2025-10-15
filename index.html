@@ -113,7 +113,7 @@
         var sendButton = document.getElementById('send-button');
         
         var synth;
-        var isCurrentlyTalking = false;
+        var hideTimeout;
         
         function initAudio() {
             if (synth) return Promise.resolve();
@@ -142,9 +142,11 @@
         }
         
         function talk(text) {
-            if (!text.trim() || isCurrentlyTalking) return;
+            if (!text.trim()) return;
             
-            isCurrentlyTalking = true;
+            if (hideTimeout) {
+                clearTimeout(hideTimeout);
+            }
             
             initAudio().then(function() {
                 chatDisplay.textContent = '';
@@ -154,9 +156,8 @@
                 
                 function processChar() {
                     if (i >= text.length) {
-                        setTimeout(function() {
+                        hideTimeout = setTimeout(function() {
                             chatDisplay.style.display = 'none';
-                            isCurrentlyTalking = false;
                         }, 15000);
                         return;
                     }
